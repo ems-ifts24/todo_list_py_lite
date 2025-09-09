@@ -4,7 +4,6 @@ Contiene funciones de ayuda para validaciones, colores y formato.
 """
 from datetime import datetime
 import os
-import sys
 
 # Constantes para colores y estilos
 class Colors:
@@ -18,17 +17,20 @@ class Colors:
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
 
-# Emojis
+# Emojis reemplazados por caracteres ASCII compatibles
 EMOJIS = {
-    'check': '✅',
-    'edit': '✏️',
-    'delete': '🗑️',
-    'add': '➕',
-    'search': '🔍',
-    'warning': '⚠️',
-    'error': '❌',
-    'info': 'ℹ️',
-    'clock': '⏰'
+    'check': '[OK]',      # ✅ → [OK]
+    'edit': '[EDIT]',     # ✏️ → [EDIT]
+    'delete': '[X]',      # 🗑️ → [X]
+    'add': '[+]',         # ➕ → [+]
+    'search': '[?]',      # 🔍 → [?]
+    'warning': '[!]',     # ⚠️ → [!]
+    'error': '[ERR]',     # ❌ → [ERR]
+    'info': '[i]',        # ℹ️ → [i]
+    'clock': '[H]',       # ⏰ → [H]
+    'list': '[*]',        # Para listas
+    'arrow': '[->]',      # Flecha
+    'star': '[*]'         # Para destacar
 }
 
 def limpiar_pantalla():
@@ -42,22 +44,25 @@ def obtener_fecha_actual():
 def validar_opcion(opcion, min_val, max_val):
     """Valida que la opción ingresada sea un número dentro del rango."""
     try:
-        opcion = int(opcion)
+        opcion = int(opcion)    # Valida que sea entero. Si no lo puede parsear, lanza ValueError.
         if min_val <= opcion <= max_val:
             return True, opcion
-        return False, None
+        return False, None  # Retorna una tupla (bool, int)
     except ValueError:
-        return False, None
+        return False, None  # Retorna una tupla (bool, None)
 
+# Función que recibe un array de tareas y las formatea en una tabla
 def formatear_tabla(tareas):
     """Formatea la lista de tareas en una tabla."""
     if not tareas:
         return "No hay tareas para mostrar."
     
     # Encabezados de la tabla
+    # Ancho de columna con :4, :30, :8, :12 y < para alinear los textos a la izquierda
+    # "-" * 85 crea una línea horizontal de 85 caracteres
     tabla = [
-        f"{Colors.BOLD}{'ID':<4} | {'TAREA':<30} | {'PRIORIDAD':<8} | {'ESTADO':<12} | ÚLTIMA MODIFICACIÓN{Colors.RESET}",
-        "-" * 85
+        f"{Colors.BOLD}{'ID':<4} | {'TAREA':<40} | {'PRIORIDAD':<10} | {'ESTADO':<15} | {'ÚLTIMA MODIFICACIÓN':<20}{Colors.RESET}",
+        "-" * 102
     ]
     
     # Filas de la tabla
@@ -76,7 +81,10 @@ def formatear_tabla(tareas):
         else:
             estado = tarea['estado']
         
-        fila = f"{tarea['id']:<4} | {tarea['nombre']:<30} | {prioridad:<8} | {estado:<12} | {tarea['fecha']}"
+        # Cuando se usan códigos de colores ANSI (como Colors.RED), estos ocupan espacio en la consola pero no se muestran
+        # ni cuentan para el ancho de formato. Por ejemplo, \033[91mALTA\033[0m tiene más caracteres que "ALTA",
+        # pero en la consola solo muestra "ALTA". Por eso se usa 19 en lugar de 10 para la prioridad.
+        fila = f"{tarea['id']:<4} | {tarea['nombre']:<40} | {prioridad:<19} | {estado:<15} | {tarea['fecha']:<20}"
         tabla.append(fila)
     
     return '\n'.join(tabla)

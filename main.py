@@ -36,6 +36,7 @@ ESTADOS = {
 class AplicacionTodoList:
     """Clase principal de la aplicación TODO List."""
     
+    # Constructor - Se llama automáticamente al crear una instancia de la clase
     def __init__(self):
         """Inicializa la aplicación con el servicio de tareas."""
         self.servicio = TodoService()
@@ -46,7 +47,7 @@ class AplicacionTodoList:
     def mostrar_encabezado(self):
         """Muestra el encabezado de la aplicación."""
         limpiar_pantalla()
-        print(f"\n{Colors.BOLD}{Colors.PURPLE}📝 TODO List App{Colors.RESET}")
+        print(f"\n{Colors.BOLD}{Colors.PURPLE}TODO List App{Colors.RESET}")
         print(f"{'~' * 40}")
         print(f"{Colors.CYAN}Fecha actual: {obtener_fecha_actual()}{Colors.RESET}\n")
     
@@ -64,7 +65,7 @@ class AplicacionTodoList:
         # Bucle hasta recibir una opción válida
         while True:
             opcion = input("\nSeleccione una opción (1-6): ")
-            valida, opcion_num = validar_opcion(opcion, 1, 6)
+            valida, opcion_num = validar_opcion(opcion, 1, 6)   # validar_opcion retorna una tupla (bool, int)
             
             # Retorna si la opción es válida
             if valida:
@@ -90,7 +91,7 @@ class AplicacionTodoList:
                 elif opcion == 5:  # Eliminar tarea
                     self.eliminar_tarea()
                 elif opcion == 6:  # Salir
-                    print(f"\n{Colors.GREEN}¡Hasta luego! {EMOJIS['check']}{Colors.RESET}\n")
+                    print(f"\n{Colors.GREEN}Hasta luego!!! {EMOJIS['check']}{Colors.RESET}\n")
                     break
                 
                 pausa()
@@ -141,10 +142,11 @@ class AplicacionTodoList:
         if mensaje:
             print(f"\n{mensaje}")
         
-        # Si no se proporciona una lista de tareas, obtener todas
+        # Si no se proporciona una lista de tareas, obtener todas (Null)
         if tareas is None:
             tareas = self.servicio.listar_tareas()
         
+        # Si no hay tareas (Empty)
         if not tareas:
             print(f"\n{Colors.YELLOW}No hay tareas para mostrar.{Colors.RESET}")
             return
@@ -348,6 +350,7 @@ class AplicacionTodoList:
             except ValueError:
                 print(f"{Colors.RED}Por favor ingrese un número de ID válido.{Colors.RESET}")
 
+# Función principal que inicia la aplicación (Por convención se llama main)
 def main():
     """Función principal que inicia la aplicación."""
     try:
@@ -361,5 +364,6 @@ def main():
         pausa()
         main()  # Reiniciar la aplicación en caso de error
 
+# Patron para saber si el archivo se ejecuta directamente o si es importado como módulo
 if __name__ == "__main__":
     main()

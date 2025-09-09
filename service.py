@@ -4,12 +4,12 @@ Contiene la lógica de negocio y manejo de datos.
 """
 import json
 import os
-from datetime import datetime
-from utils import Colors, EMOJIS, obtener_fecha_actual
+from utils import EMOJIS, obtener_fecha_actual
 
 class TodoService:
     """Clase que maneja la lógica de negocio de la aplicación TODO List."""
     
+    # Los métodos que inician con _ son privados y no se pueden acceder desde fuera de la clase.
     def __init__(self, archivo_datos='todo_list.json'):
         """
         Inicializa el servicio con la ruta al archivo de datos.
@@ -37,6 +37,9 @@ class TodoService:
     
     def _guardar_tareas(self):
         """Guarda las tareas en el archivo JSON."""
+        # Abre el json en modo escritura (w) y codifica en utf-8
+        # json.dump convierte la lista self.tareas en json
+        # ensure_ascii=False permite guardar caracteres como acentos, ñ, etc.
         with open(self.archivo_datos, 'w', encoding='utf-8') as f:
             json.dump(self.tareas, f, indent=2, ensure_ascii=False)
     
