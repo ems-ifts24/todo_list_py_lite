@@ -10,6 +10,13 @@ from utils import (
     Colors, EMOJIS, limpiar_pantalla, 
     obtener_fecha_actual, formatear_tabla, pausa, validar_opcion
 )
+# Importar el módulo de simulación
+try:
+    from simulador import ejecutar_simulacion
+except ImportError:
+    print("Advertencia: No se pudo cargar el módulo de simulación.")
+    print("Asegúrate de que los archivos simulador.py, generar_aleatorios.py y graficos.py estén en el mismo directorio.")
+    ejecutar_simulacion = None
 
 # Constantes
 OPCIONES_MENU_PRINCIPAL = [
@@ -18,6 +25,7 @@ OPCIONES_MENU_PRINCIPAL = [
     "Buscar tareas",
     "Editar tarea",
     "Eliminar tarea",
+    "Simulación de datos",
     "Salir"
 ]
 
@@ -56,16 +64,20 @@ class AplicacionTodoList:
         self.mostrar_encabezado()
         print(f"{Colors.BOLD}Menú Principal:{Colors.RESET}")
         
-        # Muestra opciones numeradas (1-6)
+        # Muestra opciones numeradas (1-7)
         for i, opcion in enumerate(OPCIONES_MENU_PRINCIPAL, 1):
-            print(f"{i}. {opcion}")
+            # Resaltar la opción de simulación con un color diferente
+            if opcion == "Simulación de datos":
+                print(f"{Colors.CYAN}{i}. {opcion}{Colors.RESET}")
+            else:
+                print(f"{i}. {opcion}")
         
         print("\n" + "~" * 40)
         
         # Bucle hasta recibir una opción válida
         while True:
-            opcion = input("\nSeleccione una opción (1-6): ")
-            valida, opcion_num = validar_opcion(opcion, 1, 6)   # validar_opcion retorna una tupla (bool, int)
+            opcion = input("\nSeleccione una opción (1-7): ")
+            valida, opcion_num = validar_opcion(opcion, 1, 7)   # validar_opcion retorna una tupla (bool, int)
             
             # Retorna si la opción es válida
             if valida:
@@ -90,7 +102,9 @@ class AplicacionTodoList:
                     self.editar_tarea()
                 elif opcion == 5:  # Eliminar tarea
                     self.eliminar_tarea()
-                elif opcion == 6:  # Salir
+                elif opcion == 6:  # Simulación de datos
+                    self.mostrar_menu_simulacion()
+                elif opcion == 7:  # Salir
                     print(f"\n{Colors.GREEN}Hasta luego!!! {EMOJIS['check']}{Colors.RESET}\n")
                     break
                 
@@ -312,6 +326,31 @@ class AplicacionTodoList:
             print(f"\n{Colors.GREEN}{mensaje}{Colors.RESET}")
         else:
             print(f"\n{Colors.RED}{mensaje}{Colors.RESET}")
+    
+    def mostrar_menu_simulacion(self):
+        """Muestra el menú de simulación de datos."""
+        if ejecutar_simulacion is None:
+            print(f"\n{Colors.RED}El módulo de simulación no está disponible.{Colors.RESET}")
+            print("Asegúrate de que los siguientes archivos estén en el mismo directorio:")
+            print("- simulador.py")
+            print("- generar_aleatorios.py")
+            print("- graficos.py")
+            print("\nAdemás, asegúrate de tener instaladas las dependencias necesarias:")
+            print("- pandas")
+            print("- matplotlib")
+            print("- seaborn")
+            print(f"\nPuedes instalarlas con: {Colors.CYAN}pip install pandas matplotlib seaborn{Colors.RESET}")
+            pausa()
+            return
+        
+        try:
+            print(f"\n{Colors.CYAN} Cargando módulo de simulación...{Colors.RESET}")
+            ejecutar_simulacion()
+        except Exception as e:
+            print(f"\n{Colors.RED}Error al ejecutar la simulación: {str(e)}{Colors.RESET}")
+            import traceback
+            traceback.print_exc()
+            pausa()
     
     def eliminar_tarea(self):
         """Interfaz para eliminar una tarea."""
