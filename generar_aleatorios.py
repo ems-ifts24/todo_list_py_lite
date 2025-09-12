@@ -54,9 +54,9 @@ def generar_estado() -> str:
     Genera un estado aleatorio para una tarea.
     
     Returns:
-        str: Estado de la tarea
+        str: Estado de la tarea (PENDIENTE, EN CURSO, FINALIZADA)
     """
-    estados = ["pendiente", "en progreso", "completada", "en revisión", "bloqueada"]
+    estados = ["PENDIENTE", "EN CURSO", "FINALIZADA"]
     return random.choice(estados)
 
 def generar_prioridad() -> str:
@@ -64,9 +64,9 @@ def generar_prioridad() -> str:
     Genera una prioridad aleatoria para una tarea.
     
     Returns:
-        str: Prioridad de la tarea
+        str: Prioridad de la tarea (ALTA, MEDIA, BAJA)
     """
-    prioridades = ["baja", "media", "alta", "crítica"]
+    prioridades = ["ALTA", "MEDIA", "BAJA"]
     return random.choice(prioridades)
 
 def generar_tarea_unica(tareas_existentes: List[Dict[str, Any]]) -> Dict[str, Any]:

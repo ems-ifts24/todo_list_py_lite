@@ -10,18 +10,15 @@ plt.rcParams['font.size'] = 10
 
 # Paleta de colores consistente
 COLORES_PRIORIDAD = {
-    'baja': '#4CAF50',     # Verde
-    'media': '#FFC107',    # Amarillo
-    'alta': '#FF9800',     # Naranja
-    'crítica': '#F44336'   # Rojo
+    'BAJA': '#4CAF50',     # Verde
+    'MEDIA': '#FFC107',    # Amarillo
+    'ALTA': '#F44336'      # Rojo
 }
 
 COLORES_ESTADO = {
-    'pendiente': '#9E9E9E',    # Gris
-    'en progreso': '#2196F3',  # Azul
-    'completada': '#4CAF50',   # Verde
-    'en revisión': '#9C27B0',  # Púrpura
-    'bloqueada': '#F44336'     # Rojo
+    'PENDIENTE': '#9E9E9E',    # Gris
+    'EN CURSO': '#2196F3',     # Azul
+    'FINALIZADA': '#4CAF50'    # Verde
 }
 
 def configurar_grafico(titulo: str, xlabel: str = '', ylabel: str = '') -> None:
@@ -51,8 +48,8 @@ def grafico_tareas_por_prioridad(tareas: List[Dict[str, Any]]) -> None:
     # Contar tareas por prioridad
     conteo = df['prioridad'].value_counts().sort_index()
     
-    # Ordenar por prioridad (personalizado)
-    orden_prioridad = ['baja', 'media', 'alta', 'crítica']
+    # Ordenar por prioridad (ALTA, MEDIA, BAJA)
+    orden_prioridad = ['ALTA', 'MEDIA', 'BAJA']
     conteo = conteo.reindex(orden_prioridad, fill_value=0)
     
     # Crear gráfico
@@ -163,8 +160,8 @@ def grafico_pie_prioridad(tareas: List[Dict[str, Any]]) -> None:
     # Contar tareas por prioridad
     conteo = df['prioridad'].value_counts()
     
-    # Ordenar por prioridad
-    orden_prioridad = ['baja', 'media', 'alta', 'crítica']
+    # Ordenar por prioridad (ALTA, MEDIA, BAJA)
+    orden_prioridad = ['ALTA', 'MEDIA', 'BAJA']
     conteo = conteo.reindex(orden_prioridad, fill_value=0)
     
     # Crear gráfico de pastel
@@ -271,7 +268,7 @@ def mostrar_cuatro_graficos(tareas: List[Dict[str, Any]]) -> None:
     # 1. Gráfico de barras por prioridad
     df = pd.DataFrame(tareas)
     conteo_prioridad = df['prioridad'].value_counts()
-    orden_prioridad = ['baja', 'media', 'alta', 'crítica']
+    orden_prioridad = ['ALTA', 'MEDIA', 'BAJA']
     conteo_prioridad = conteo_prioridad.reindex(orden_prioridad, fill_value=0)
     
     axs[0, 0].bar(conteo_prioridad.index, conteo_prioridad.values, 
