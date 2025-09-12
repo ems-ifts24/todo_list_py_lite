@@ -29,21 +29,25 @@ def generar_nombre_tarea() -> str:
 
 def generar_fecha_aleatoria() -> str:
     """
-    Genera una fecha aleatoria dentro de septiembre de 2025.
+    Genera una fecha y hora aleatoria dentro de septiembre de 2025.
     
     Returns:
-        str: Fecha en formato YYYY-MM-DD
+        str: Fecha y hora en formato 'YYYY-MM-DD HH:MM:SS'
     """
     # Rango de fechas: 01/09/2025 - 30/09/2025
     inicio = datetime(2025, 9, 1)
     fin = datetime(2025, 9, 30)
     
-    # Generar un número aleatorio de días dentro del rango
+    # Generar un número aleatorio de segundos dentro del rango
     delta = fin - inicio
-    dias_aleatorios = random.randrange(delta.days + 1)
-    fecha = inicio + timedelta(days=dias_aleatorios)
+    segundos_totales = delta.days * 24 * 60 * 60  # Convertir días a segundos
+    segundos_aleatorios = random.randrange(segundos_totales)
+    fecha = inicio + timedelta(seconds=segundos_aleatorios)
     
-    return fecha.strftime("%Y-%m-%d")
+    # Redondear a minutos para tener una hora más realista
+    fecha = fecha.replace(second=0)
+    
+    return fecha.strftime("%Y-%m-%d %H:%M:%S")
 
 def generar_estado() -> str:
     """
@@ -73,8 +77,22 @@ def generar_tarea_unica(tareas_existentes: List[Dict[str, Any]]) -> Dict[str, An
         tareas_existentes: Lista de tareas existentes para verificar duplicados
         
     Returns:
-        Dict[str, Any]: Tarea generada
+        Dict[str, Any]: Tarea generada con la estructura: 
+        {
+            "id": int,
+            "nombre": str,
+            "prioridad": str,
+            "estado": str,
+            "fecha": str
+        }
     """
+    # Obtener el próximo ID disponible
+    if tareas_existentes:
+        ultimo_id = max(int(tarea.get('id', 0)) for tarea in tareas_existentes)
+        nuevo_id = ultimo_id + 1
+    else:
+        nuevo_id = 1
+    
     # Obtener todos los nombres de tareas existentes
     nombres_existentes = {tarea.get('nombre', '') for tarea in tareas_existentes}
     
@@ -91,15 +109,13 @@ def generar_tarea_unica(tareas_existentes: List[Dict[str, Any]]) -> Dict[str, An
         nombre_base = f"{nombre_base} ({contador})"
         break
     
-    # Crear la tarea
+    # Crear la tarea con la estructura exacta requerida
     tarea = {
+        "id": nuevo_id,
         "nombre": nombre_base,
-        "descripcion": f"Descripción para {nombre_base}",
-        "fecha_creacion": generar_fecha_aleatoria(),
-        "fecha_vencimiento": generar_fecha_aleatoria(),
         "prioridad": generar_prioridad(),
         "estado": generar_estado(),
-        "etiquetas": ["simulada"]
+        "fecha": generar_fecha_aleatoria()
     }
     
     return tarea
