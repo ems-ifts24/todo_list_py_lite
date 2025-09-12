@@ -14,7 +14,7 @@ El resultado final es un prompt optimizado para **Windsurf AI**, que permite cre
 > Dicha TODO List debo realizarla en Python.  
 > Debería guardar Tarea, prioridad y estado (pendiente/hecho).  
 > El programa debe ofrecer todas las funciones de un CRUD, en un bucle infinito hasta que seleccione la opción de salir.  
-> Luego de cada operación, deberá guardar o actualizar los datos en un archivo CSV.  
+> Luego de cada operación, deberá guardar o actualizar los datos en un archivo Json.  
 > Otra opción del programa es generar un archivo JSON con toda la información a modo de exportar los datos.  
 > Quiero que me hagas todas preguntas necesarias para armar un prompt adecuado para que otra IA me pueda generar el código necesario."
 
@@ -31,60 +31,34 @@ Te pedí detalles sobre:
 > "Agrego detalles para mejorar la experiencia de usuario.  
 > Cuando se edite una tarea, se debe mostrar los datos actuales y preguntar qué campo se quiere modificar: Tarea, prioridad o estado, y sin limpiar la pantalla debe pedirse el nuevo valor del campo elegido.  
 > Luego de modificarlo, preguntar si se quiere editar otro campo más, sino volver al menú.  
-> Cambio el uso de los archivos. Quiero que se guarde siempre en un archivo JSON y en caso de querer exportarlo que se haga en un CSV.  
-> El nombre de este archivo será la fecha de generación ej: `yyyyMMdd_hhmmss_-_todo_list.csv`.  
+> Quiero que se guarde siempre en un archivo JSON.  
 > El JSON no quiero que esté indexado por el id. Mejor que esté el id como un atributo más del objeto y el JSON sea un array de objetos.  
-> ¿Se entendió lo que agregué?"
 
 **Respuesta de GPT:**  
-Sí, confirmé la comprensión y ajustamos el diseño:
+Confirmé la comprensión y ajustamos el diseño:
 - Persistir siempre en **JSON**.
-- Exportar solo a **CSV** con nombre dinámico.
 - El JSON será un **array de objetos**, no un mapa indexado.
 - La edición de tareas será **interactiva y flexible**.
 
 ---
 
 ### Pedido del usuario
-> "Quiero que me generes un prompt para Windsurf con la misma aplicación, pero como si la desarrollara un junior.  
-> Quiero menos complejidad en el código.  
-> Mi idea era un archivo main, tal vez un service con las funciones de CRUD. Algo más simple."
+> "Quiero que me generes un prompt para Windsurf, pero como si la desarrollara un junior.  
+> Algo así como un archivo main donde esté la lógica de los menús, un archivo para las validaciones y utilidades, y otro archivo donde esté la lógica de negocio, con las funciones que hará cada opción del menú (CRUD).  
 
 **Respuesta de GPT:**  
 Te propuse un enfoque modular más básico:
 - **main.py** → Lógica de menús e interacción.
-- **services.py** → Funciones CRUD.
+- **service.py** → Funciones CRUD.
 - **utils.py** → Validaciones y utilidades.
-
----
-
-### Pedido del usuario
-> "Quiero un nuevo prompt, como si lo escribiera un junior.  
-> Algo así como un archivo main donde esté la lógica de los menús, un archivo para las validaciones y utilidades, y otro archivo donde esté la lógica de negocio, con las funciones que hará cada opción del menú.  
-> ¿Qué te parece?"
-
-**Respuesta de GPT:**  
-Confirmé que es válido y te hice preguntas sobre:
 - Uso de **clases**.
 - Manejo del listado de tareas.
 - Validaciones.
-- Exportación de CSV (que luego eliminamos).
 
 ---
 
 ### Pedido del usuario
-> "Eliminemos la opción de exportar CSV. Así queda más simple y con menos código."
-
-**Respuesta de GPT:**  
-Quedamos en:
-- Solo **persistencia en JSON**.
-- Eliminamos por completo la exportación a CSV.
-
----
-
-### Pedido del usuario
-> "Me gustaría mantener los emojis y colores de texto.  
-> También quiero que las funciones estén comentadas."
+> "También quiero que las funciones estén comentadas."
 
 **Respuesta de GPT:**  
 Se decidió:
