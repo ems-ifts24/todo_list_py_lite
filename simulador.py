@@ -4,26 +4,26 @@ from datetime import datetime
 from typing import Dict, List, Any
 import generar_aleatorios
 import graficos
-from utils import limpiar_pantalla, pausa as pausar
+from utils import limpiar_pantalla, pausa as pausar, Colors
 
 def mostrar_menu_simulacion() -> None:
     """
     Muestra el menú de simulación con las opciones disponibles.
     """
     limpiar_pantalla()
-    print("\n" + "="*50)
-    print(" "*15 + "SIMULACIÓN" + " "*15)
-    print("="*50)
-    print("\n1. Generar N registros simulados (default = 100)")
-    print("2. Generar gráfico: Tareas por Prioridad")
-    print("3. Generar gráfico: Tareas por Estado")
-    print("4. Generar gráfico: Distribución Temporal de Tareas")
-    print("5. Generar gráfico: Relación Prioridad vs Estado (heatmap)")
-    print("6. Generar gráfico: Proporción de Tareas por Prioridad (pie chart)")
-    print("7. Generar gráfico: Proporción de Tareas por Estado (pie chart)")
-    print("8. Generar gráfico: Tendencia de Estados en el Tiempo (stackplot)")
-    print("9. Mostrar 4 gráficos juntos")
-    print("10. Volver al menú principal\n")
+    print(f"\n{Colors.BLUE}{'='*50}{Colors.RESET}")
+    print(f"{Colors.BOLD}{' '*15}📊 SIMULACIÓN DE DATOS {' '*15}{Colors.RESET}")
+    print(f"{Colors.BLUE}{'='*50}{Colors.RESET}\n")
+    print(f"{Colors.CYAN}1. 🆕 Generar N registros simulados (default = 100)")
+    print(f"2. 📊 Generar gráfico: Tareas por Prioridad")
+    print(f"3. 📈 Generar gráfico: Tareas por Estado")
+    print(f"4. 📅 Generar gráfico: Distribución Temporal de Tareas")
+    print(f"5. 🔥 Generar gráfico: Relación Prioridad vs Estado (heatmap)")
+    print(f"6. 🍕 Generar gráfico: Proporción de Tareas por Prioridad (pie chart)")
+    print(f"7. 🍰 Generar gráfico: Proporción de Tareas por Estado (pie chart)")
+    print(f"8. 📉 Generar gráfico: Tendencia de Estados en el Tiempo (stackplot)")
+    print(f"9. 🖼️  Mostrar 4 gráficos juntos")
+    print(f"{Colors.YELLOW}10. ↩️  Volver al menú principal{Colors.RESET}\n")
 
 def cargar_datos_simulados(archivo: str = None) -> List[Dict[str, Any]]:
     """
@@ -39,7 +39,7 @@ def cargar_datos_simulados(archivo: str = None) -> List[Dict[str, Any]]:
         # Buscar el archivo de simulación más reciente
         archivos = [f for f in os.listdir() if f.startswith('todo_list_simulador_') and f.endswith('.json')]
         if not archivos:
-            print("No se encontraron archivos de simulación. Genere datos primero.")
+            print(f"{Colors.YELLOW}⚠️ No se encontraron archivos de simulación. Genere datos primero.{Colors.RESET}")
             return []
         archivo = max(archivos, key=os.path.getmtime)
     
@@ -47,10 +47,10 @@ def cargar_datos_simulados(archivo: str = None) -> List[Dict[str, Any]]:
         with open(archivo, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f"No se pudo encontrar el archivo: {archivo}")
+        print(f"{Colors.RED}❌ No se pudo encontrar el archivo: {archivo}{Colors.RESET}")
         return []
     except json.JSONDecodeError:
-        print(f"Error al leer el archivo JSON: {archivo}")
+        print(f"{Colors.RED}❌ Error al leer el archivo JSON: {archivo}{Colors.RESET}")
         return []
 
 def ejecutar_simulacion() -> None:
@@ -66,7 +66,7 @@ def ejecutar_simulacion() -> None:
         try:
             opcion = int(opcion)
             if opcion < 1 or opcion > 10:
-                print("Opción inválida. Intente de nuevo.")
+                print(f"{Colors.RED}❌ Opción inválida. Intente de nuevo.{Colors.RESET}")
                 pausar()
                 continue
                 
@@ -82,7 +82,7 @@ def ejecutar_simulacion() -> None:
                     print(f"Datos simulados guardados en: {archivo_generado}")
                     datos_simulados = cargar_datos_simulados(archivo_generado)
                 else:
-                    print("No se pudieron generar los datos simulados.")
+                    print(f"{Colors.RED}❌ No se pudieron generar los datos simulados.{Colors.RESET}")
                 
             elif 2 <= opcion <= 9:
                 # Cargar datos si no están cargados

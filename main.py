@@ -20,25 +20,25 @@ except ImportError:
 
 # Constantes
 OPCIONES_MENU_PRINCIPAL = [
-    "Agregar tarea",
-    "Listar tareas",
-    "Buscar tareas",
-    "Editar tarea",
-    "Eliminar tarea",
-    "Simulación de datos",
-    "Salir"
+    f"Agregar tarea  {EMOJIS['add']}",
+    f"Listar tareas  {EMOJIS['list']}",
+    f"Buscar tareas  {EMOJIS['search']}",
+    f"Editar tarea  {EMOJIS['edit']}",
+    f"Eliminar tarea  {EMOJIS['delete']}",
+    f"Simulación de datos {EMOJIS['info']}",
+    f"Salir  {EMOJIS['salir']}"
 ]
 
 PRIORIDADES = {
-    1: "ALTA",
-    2: "MEDIA",
-    3: "BAJA"
+    1: "🔴 ALTA",
+    2: "🟡 MEDIA",
+    3: "🟢 BAJA"
 }
 
 ESTADOS = {
-    1: "PENDIENTE",
-    2: "EN CURSO",
-    3: "FINALIZADA"
+    1: "⏳ PENDIENTE",
+    2: "🔄 EN CURSO",
+    3: "✅ FINALIZADA"
 }
 
 class AplicacionTodoList:
@@ -84,7 +84,7 @@ class AplicacionTodoList:
                 return opcion_num
                 
             # Muestra error y repite el bucle
-            print(f"{Colors.RED}Opción inválida. Intente nuevamente.{Colors.RESET}")
+            print(f"{Colors.RED}❌ Opción inválida. Intente nuevamente.{Colors.RESET}")
     
     def ejecutar(self):
         """Ejecuta el bucle principal de la aplicación."""
@@ -105,7 +105,7 @@ class AplicacionTodoList:
                 elif opcion == 6:  # Simulación de datos
                     self.mostrar_menu_simulacion()
                 elif opcion == 7:  # Salir
-                    print(f"\n{Colors.GREEN}Hasta luego!!! {EMOJIS['check']}{Colors.RESET}\n")
+                    print(f"\n{Colors.GREEN}👋 Hasta luego!!! {EMOJIS['check']}{Colors.RESET}\n")
                     break
                 
                 pausa()
@@ -127,10 +127,10 @@ class AplicacionTodoList:
             nombre = input("Nombre de la tarea: ").strip()
             if nombre:
                 break
-            print(f"{Colors.RED}El nombre no puede estar vacío.{Colors.RESET}")
+            print(f"{Colors.RED}❌ El nombre no puede estar vacío.{Colors.RESET}")
         
         # Obtener prioridad
-        print("\nSeleccione la prioridad:")
+        print(f"\n{Colors.BOLD}🎯 Seleccione la prioridad:{Colors.RESET}")
         for num, prioridad in PRIORIDADES.items():
             print(f"{num}. {prioridad}")
         
@@ -140,7 +140,7 @@ class AplicacionTodoList:
             if valida:
                 prioridad = PRIORIDADES[opcion_num]
                 break
-            print(f"{Colors.RED}Opción inválida. Intente nuevamente.{Colors.RESET}")
+            print(f"{Colors.RED}❌ Opción inválida. Intente nuevamente.{Colors.RESET}")
         
         # Agregar la tarea
         exito, mensaje = self.servicio.agregar_tarea(nombre, prioridad)
@@ -204,7 +204,7 @@ class AplicacionTodoList:
                 else:
                     prioridad = PRIORIDADES[opcion_num - 1]
                 break
-            print(f"{Colors.RED}Opción inválida. Intente nuevamente.{Colors.RESET}")
+            print(f"{Colors.RED}❌ Opción inválida. Intente nuevamente.{Colors.RESET}")
         
         # Realizar la búsqueda
         if texto_busqueda:
@@ -264,7 +264,7 @@ class AplicacionTodoList:
             valida, opcion_num = validar_opcion(opcion, 1, 4)
             if valida:
                 break
-            print(f"{Colors.RED}Opción inválida. Intente nuevamente.{Colors.RESET}")
+            print(f"{Colors.RED}❌ Opción inválida. Intente nuevamente.{Colors.RESET}")
         
         if opcion_num == 4:
             print("Operación cancelada.")
@@ -274,7 +274,7 @@ class AplicacionTodoList:
         if opcion_num == 1:  # Editar nombre
             nuevo_nombre = input("Nuevo nombre: ").strip()
             if not nuevo_nombre:
-                print(f"{Colors.RED}El nombre no puede estar vacío.{Colors.RESET}")
+                print(f"{Colors.RED}❌ El nombre no puede estar vacío.{Colors.RESET}")
                 return
             
             exito, mensaje = self.servicio.editar_tarea(
@@ -294,7 +294,7 @@ class AplicacionTodoList:
                 valida, prioridad_num = validar_opcion(opcion_prioridad, 1, 3)
                 if valida:
                     break
-                print(f"{Colors.RED}Opción inválida. Intente nuevamente.{Colors.RESET}")
+                print(f"{Colors.RED}❌ Opción inválida. Intente nuevamente.{Colors.RESET}")
             
             exito, mensaje = self.servicio.editar_tarea(
                 tarea_id,
@@ -313,7 +313,7 @@ class AplicacionTodoList:
                 valida, estado_num = validar_opcion(opcion_estado, 1, 3)
                 if valida:
                     break
-                print(f"{Colors.RED}Opción inválida. Intente nuevamente.{Colors.RESET}")
+                print(f"{Colors.RED}❌ Opción inválida. Intente nuevamente.{Colors.RESET}")
             
             exito, mensaje = self.servicio.editar_tarea(
                 tarea_id,

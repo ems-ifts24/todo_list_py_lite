@@ -151,6 +151,6 @@ class TodoService:
             if tarea['id'] == tarea_id:
                 tarea_eliminada = self.tareas.pop(i)
                 self._guardar_tareas()
-                return True, f"{EMOJIS['delete']} Tarea eliminada: {tarea_eliminada['nombre']}"
+                return True, f"Tarea eliminada  {EMOJIS['delete']} : {tarea_eliminada['nombre']}"
         
         return False, f"No se encontró ninguna tarea con ID: {tarea_id}"

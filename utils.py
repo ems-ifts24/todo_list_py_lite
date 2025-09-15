@@ -19,18 +19,18 @@ class Colors:
 
 # Emojis reemplazados por caracteres ASCII compatibles
 EMOJIS = {
-    'check': '[OK]',      # ✅ → [OK]
-    'edit': '[EDIT]',     # ✏️ → [EDIT]
-    'delete': '[X]',      # 🗑️ → [X]
-    'add': '[+]',         # ➕ → [+]
-    'search': '[?]',      # 🔍 → [?]
-    'warning': '[!]',     # ⚠️ → [!]
-    'error': '[ERR]',     # ❌ → [ERR]
-    'info': '[i]',        # ℹ️ → [i]
-    'clock': '[H]',       # ⏰ → [H]
-    'list': '[*]',        # Para listas
-    'arrow': '[->]',      # Flecha
-    'star': '[*]'         # Para destacar
+    'check': '✅',
+    'edit': '✏️',
+    'delete': '🗑️',
+    'add': '📝',
+    'search': '🔍',
+    'warning': '⚠️',
+    'error': '❌',
+    'info': 'ℹ️',
+    'clock': '⏰',
+    'list': '📋',
+    'simulacion': '📊',
+    'salir': '🚪'
 }
 
 def limpiar_pantalla():
