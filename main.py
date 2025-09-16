@@ -152,7 +152,7 @@ class AplicacionTodoList:
     def listar_tareas(self, tareas=None, mensaje=None):
         """Muestra la lista de tareas con opción de paginación."""
         self.mostrar_encabezado()
-        print(f"{Colors.BOLD}{EMOJIS['info']} Lista de Tareas{Colors.RESET}")
+        print(f"{Colors.BOLD}{EMOJIS['info']}  Lista de Tareas{Colors.RESET}")
         if mensaje:
             print(f"\n{mensaje}")
         
@@ -180,7 +180,7 @@ class AplicacionTodoList:
             if inicio < total_tareas:
                 input(f"\n{Colors.BLUE}Presiona Enter para ver más tareas o Ctrl+C para volver al menú...{Colors.RESET}")
                 self.mostrar_encabezado()
-                print(f"{Colors.BOLD}{EMOJIS['info']} Lista de Tareas (continuación){Colors.RESET}\n")
+                print(f"{Colors.BOLD}{EMOJIS['info']}  Lista de Tareas (continuación){Colors.RESET}\n")
     
     def buscar_tareas(self):
         """Interfaz para buscar tareas."""

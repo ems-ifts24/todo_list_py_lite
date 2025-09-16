@@ -3,7 +3,8 @@ Módulo de utilidades para la aplicación TODO List.
 Contiene funciones de ayuda para validaciones, colores y formato.
 """
 from datetime import datetime
-import os
+import os   # Módulo os usado para limpiar pantalla.
+import re   # Módulo regex usado para calcular el ancho de la tabla.
 
 # Constantes para colores y estilos
 class Colors:
@@ -38,8 +39,8 @@ def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def obtener_fecha_actual():
-    """Devuelve la fecha y hora actual formateada."""
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    """Devuelve la fecha y hora actual formateada en formato DD/MM/YYYY HH:MM:SS."""
+    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 def validar_opcion(opcion, min_val, max_val):
     """Valida que la opción ingresada sea un número dentro del rango."""
@@ -51,21 +52,67 @@ def validar_opcion(opcion, min_val, max_val):
     except ValueError:
         return False, None  # Retorna una tupla (bool, None)
 
-# Función que recibe un array de tareas y las formatea en una tabla
+def get_display_width(text):
+    """
+    Calcula el ancho visual real del texto, excluyendo códigos ANSI y ajustando emojis
+    """
+    # Remover códigos de color ANSI
+    # compile compila la expresión regular
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    clean_text = ansi_escape.sub('', text)
+    
+    # Contar caracteres, considerando que los emojis ocupan 2 espacios visuales
+    # ord() devuelve el valor Unicode de un carácter
+    width = 0
+    for char in clean_text:
+        # Los emojis y algunos caracteres especiales ocupan 2 espacios
+        if ord(char) > 0x1F600:  # Rango básico de emojis
+            width += 2
+        else:
+            width += 1
+    
+    return width
+
+def pad_text(text, width, align='left'):
+    """
+    Rellena el texto para alcanzar el ancho deseado, considerando caracteres especiales
+    """
+    display_width = get_display_width(text)
+    padding_needed = width - display_width
+    
+    if padding_needed <= 0:
+        return text
+    
+    if align == 'center':
+        left_pad = padding_needed // 2
+        right_pad = padding_needed - left_pad
+        return ' ' * left_pad + text + ' ' * right_pad
+    elif align == 'right':
+        return ' ' * padding_needed + text
+    else:  # left
+        return text + ' ' * padding_needed
+
 def formatear_tabla(tareas):
-    """Formatea la lista de tareas en una tabla."""
+    """Formatea la lista de tareas en una tabla con anchos dinámicos."""
     if not tareas:
         return "No hay tareas para mostrar."
     
-    # Encabezados de la tabla
-    # Ancho de columna con :4, :30, :8, :12 y < para alinear los textos a la izquierda
-    # "-" * 85 crea una línea horizontal de 85 caracteres
-    tabla = [
-        f"{Colors.BOLD}{'ID':<4} | {'TAREA':<40} | {'PRIORIDAD':<10} | {'ESTADO':<15} | {'ÚLTIMA MODIFICACIÓN':<20}{Colors.RESET}",
-        "-" * 102
-    ]
+    # Encabezados
+    headers = ['ID', 'TAREA', 'PRIORIDAD', 'ESTADO', 'ÚLTIMA MODIFICACIÓN']
     
-    # Filas de la tabla
+    # Inicializar anchos mínimos con los encabezados
+    max_widths = {header: get_display_width(header) for header in headers}
+    
+    # Forzar ancho fijo de 40 caracteres para TAREA
+    max_widths['TAREA'] = 40
+    
+    # Forzar anchos fijos para PRIORIDAD y ESTADO (ancho actual + 1)
+    max_widths['PRIORIDAD'] = max(get_display_width('PRIORIDAD'), max_widths.get('PRIORIDAD', 0)) + 1
+    max_widths['ESTADO'] = max(get_display_width('ESTADO'), max_widths.get('ESTADO', 0)) + 1
+    
+    # Preparar datos de filas y calcular anchos máximos
+    processed_rows = []
+    
     for tarea in tareas:
         # Color según prioridad
         if tarea['prioridad'] == 'ALTA':
@@ -78,16 +125,59 @@ def formatear_tabla(tareas):
         # Estado con emoji
         if tarea['estado'] == 'FINALIZADA':
             estado = f"{EMOJIS['check']} {tarea['estado']}"
+        elif tarea['estado'] == 'PENDIENTE':
+            estado = f"⏳ {tarea['estado']}"
+        elif tarea['estado'] == 'EN CURSO':
+            estado = f"🔄 {tarea['estado']}"
         else:
             estado = tarea['estado']
         
-        # Cuando se usan códigos de colores ANSI (como Colors.RED), estos ocupan espacio en la consola pero no se muestran
-        # ni cuentan para el ancho de formato. Por ejemplo, \033[91mALTA\033[0m tiene más caracteres que "ALTA",
-        # pero en la consola solo muestra "ALTA". Por eso se usa 19 en lugar de 10 para la prioridad.
-        fila = f"{tarea['id']:<4} | {tarea['nombre']:<40} | {prioridad:<19} | {estado:<15} | {tarea['fecha']:<20}"
-        tabla.append(fila)
+        # Crear fila con datos procesados
+        row_data = [
+            str(tarea['id']),
+            tarea['nombre'][:40],  # Limitar a 40 caracteres
+            prioridad,
+            estado,
+            tarea['fecha']
+        ]
+        
+        processed_rows.append(row_data)
+        
+        # Actualizar anchos máximos (excepto para columnas con ancho fijo)
+        for i, (header, data) in enumerate(zip(headers, row_data)):
+            if header not in ['TAREA', 'PRIORIDAD', 'ESTADO']:  # Saltar columnas con ancho fijo
+                width = get_display_width(data)
+                if width > max_widths[header]:
+                    max_widths[header] = width
+    
+    # Agregar padding mínimo de 1 espacio a cada lado
+    for header in max_widths:
+        max_widths[header] += 2
+    
+    # Crear tabla
+    tabla = []
+    
+    # Encabezado formateado
+    header_row = " | ".join(
+        pad_text(f"{Colors.BOLD}{header}{Colors.RESET}", max_widths[header], 'left')
+        for header in headers
+    )
+    tabla.append(header_row)
+    
+    # Línea separadora
+    total_width = sum(max_widths.values()) + len(headers) * 3 - 3  # 3 por " | " entre columnas
+    tabla.append("-" * total_width)
+    
+    # Filas de datos
+    for row_data in processed_rows:
+        fila_formateada = " | ".join(
+            pad_text(data, max_widths[header], 'left')
+            for header, data in zip(headers, row_data)
+        )
+        tabla.append(fila_formateada)
     
     return '\n'.join(tabla)
+
 
 def pausa():
     """Muestra un mensaje y espera a que el usuario presione Enter."""
